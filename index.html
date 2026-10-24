@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>تقارير سفيرة الثقافة المؤسسية</title>
+<title>تقارير الثقافة المؤسسية</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">
 <style>
 :root{--bg:#eef3f6;--card:#fff;--ink:#16303d;--line:#c9d8e0;--navy:#16445a;--green:#12a679;--blue:#2a86b8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -66,13 +66,14 @@ td button{padding:5px 10px;font-size:13px}
 </head>
 <body>
 <div class="panel">
-<h1>تقارير سفيرة الثقافة المؤسسية — الخطة التشغيلية ١٤٤٨هـ (سبتمبر – ديسمبر ٢٠٢٦م)</h1>
+<h1>تقارير الثقافة المؤسسية — الخطة التشغيلية ١٤٤٨هـ (سبتمبر – ديسمبر ٢٠٢٦م)</h1>
 <div style="text-align:center;margin:-2px 0 16px;padding:10px 14px;border-radius:12px;background:#f4fbff;border:1px solid #b9dce9;color:#16445a;font-size:16px;font-weight:800;line-height:1.9">تقارير الثقافة المؤسسية<br><span style="display:inline-block;margin-top:2px;font-size:17px;font-weight:800;color:#c48a00;text-shadow:0 1px 1px rgba(0,0,0,.08)">✦ إعداد الأستاذ عبدالرحمن الصعب ✦</span></div>
 
 <div class="card">
  <div class="grid">
   <div><label for="amb">اسم السفير/ة (اختياري — يُحفظ تقدّمك باسمه على هذا الجهاز)</label><input id="amb" placeholder="اكتب الاسم هنا"></div>
   <div><label for="prin">اسم مدير/ة المدرسة (اختياري)</label><input id="prin" placeholder="اكتب الاسم هنا"></div>
+  <div><label for="schoolType">نوع المدرسة</label><select id="schoolType"><option value="girls">بنات</option><option value="boys">بنين</option></select></div>
   <div><label for="semester">الفصل الدراسي</label><select id="semester"><option>الفصل الدراسي الأول</option><option>الفصل الدراسي الثاني</option><option>الفصل الدراسي الثالث</option></select></div>
   <div><label for="year">العام الدراسي</label><input id="year" value="١٤٤٨هـ"></div>
   <div style="grid-column:1/-1"><label for="hdr">ترويسة التقرير (تظهر أعلى التقرير وأسفله، كل سطر على حدة، قابلة للتعديل)</label><textarea id="hdr" style="min-height:60px">الإدارة العامة للتعليم بمنطقة نجران
@@ -84,7 +85,7 @@ td button{padding:5px 10px;font-size:13px}
   <button class="ghost" id="imp">استيراد نسخة</button><input type="file" id="impf" accept=".html,.json" style="display:none">
  </div>
  <div id="msg" role="status"></div>
- <div class="hint">يُحفظ التقدّم باسم السفيرة على هذا المتصفح. إعادة التحميل تكمّل الأنشطة الناقصة فقط ولا تكرّر الموجود ولا تغيّر حالاته. للانتقال لجهاز آخر استخدم التصدير (ملف HTML) ثم الاستيراد.</div>
+ <div class="hint">يُحفظ التقدّم على هذا المتصفح. إعادة التحميل تكمّل الأنشطة الناقصة فقط ولا تكرّر الموجود ولا تغيّر حالاته. للانتقال لجهاز آخر استخدم التصدير (ملف HTML) ثم الاستيراد.</div>
 </div>
 
 <div class="card">
@@ -95,7 +96,7 @@ td button{padding:5px 10px;font-size:13px}
 </div>
 
 <div class="card">
- <h1 style="font-size:17px">تقرير النشاط</h1>
+ <h1 style="font-size:17px">تقرير</h1>
  <div class="grid">
   <div style="grid-column:1/-1"><label for="act">النشاط</label><select id="act"></select></div>
   <div><label for="dt">تاريخ التنفيذ</label><input id="dt" type="date"></div>
@@ -150,6 +151,8 @@ const P=[
 let plan=[],images=[];
 const KEY=()=>"safeer-plan:"+($("amb").value.trim()||"حسابي");
 const hl=()=>$("hdr").value.split("\n").map(x=>x.trim()).filter(Boolean);
+const feminine=()=>$("schoolType").value!=="boys";
+const genderText=s=>{let t=String(s??"");if(feminine())return t;const pairs=[["تقدمه","يقدمه"],["للمديرة","للمدير"],["المديرة","المدير"],["مديرة","مدير"],["السفيرة","السفير"],["سفيرة","سفير"],["السفيرات","السفراء"],["سفيرات","سفراء"],["المنسوبات","المنسوبين"],["منسوبات","منسوبين"],["الموظفات","الموظفين"],["موظفات","موظفين"],["المعلمات","المعلمين"],["معلمات","معلمين"],["الطالبات","الطلاب"],["طالبات","طلاب"],["المشاركات","المشاركين"],["مشاركات","مشاركين"],["المرشدات","المرشدين"],["مرشدات","مرشدين"],["المشرفات","المشرفين"],["مشرفات","مشرفين"]];for(const [a,b] of pairs)t=t.split(a).join(b);return t};
 const msg=t=>{$("msg").textContent=t};
 function readPlan(){let s=[];try{s=JSON.parse(localStorage.getItem(KEY())||"[]")}catch(e){}const seen=new Set();return s.filter(r=>r&&r.id>=1&&r.id<=P.length&&ST.includes(r.status)&&!seen.has(r.id)&&seen.add(r.id)).map(r=>({id:r.id,status:r.status,closed:r.closed||""}))}
 function save(){try{localStorage.setItem(KEY(),JSON.stringify(plan));localStorage.setItem("safeer-last",$("amb").value.trim())}catch(e){msg("تعذّر الحفظ في هذا المتصفح.")}}
@@ -157,7 +160,7 @@ function merge(){const have=new Set(plan.map(r=>r.id));let add=0;P.forEach((a,i)
 const fd=d=>d?new Date(d+"T00:00").toLocaleDateString("ar-SA-u-ca-gregory-nu-arab",{day:"numeric",month:"long",year:"numeric"}):"";
 function table(){
   $("tb").innerHTML=plan.map(r=>{const a=P[r.id-1],si=ST.indexOf(r.status);
-  return `<tr><td>${r.id}</td><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td><select class="st s${si}" data-s="${r.id}">${ST.map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select></td><td>${r.status=="مكتمل"?`<input type="date" data-c="${r.id}" value="${r.closed}">`:"—"}</td><td><button class="ghost" data-r="${r.id}">تقرير</button></td></tr>`}).join("");
+  return `<tr><td>${r.id}</td><td>${esc(genderText(a[0]))}</td><td>${esc(genderText(a[1]))}</td><td>${a[2]}</td><td><select class="st s${si}" data-s="${r.id}">${ST.map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select></td><td>${r.status=="مكتمل"?`<input type="date" data-c="${r.id}" value="${r.closed}">`:"—"}</td><td><button class="ghost" data-r="${r.id}">تقرير</button></td></tr>`}).join("");
   const n=plan.filter(r=>r.status=="مكتمل").length;
   $("sum").innerHTML=`<span>الأنشطة المحمّلة: ${plan.length}/${P.length}</span><span>مكتمل: ${n}</span>`+ST.filter(s=>s!="مكتمل").map(s=>({s,c:plan.filter(r=>r.status==s).length})).filter(x=>x.c).map(x=>`<span>${x.s}: ${x.c}</span>`).join("");
   $("bar").style.width=Math.round(n/P.length*100)+"%";
@@ -176,10 +179,10 @@ const a=document.createElement("a");a.download="خطة-"+nm+".html";a.href=URL.c
 $("imp").onclick=()=>$("impf").click();
 $("impf").onchange=async e=>{try{const t=await e.target.files[0].text(),m=t.match(/<script type="application\/json" id="safeer-data">([\s\S]*?)<\/script>/),j=JSON.parse(m?m[1]:t),arr=Array.isArray(j)?j:j.plan;let n=0;arr.forEach(x=>{if(x&&x.id>=1&&x.id<=P.length&&ST.includes(x.status)){const r=plan.find(p=>p.id==x.id);if(r){r.status=x.status;r.closed=x.status=="مكتمل"?(x.closed||""):""}else plan.push({id:x.id,status:x.status,closed:x.status=="مكتمل"?(x.closed||""):""});n++}});merge();table();msg(`تم استيراد ${n} نشاط.`)}catch(err){msg("ملف غير صالح.")}e.target.value=""};
 // التقرير
-$("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${a[1]} — ${a[0]}</option>`).join("");
-function pick(id){$("act").value=id;const a=P[id-1];$("goals").value=a[7].split("|").join("\n");$("mech").value=a[5].split("|").join("\n");
-  $("res").value=`تنفيذ النشاط وفق الخطة التشغيلية.\nتفاعل ${a[4]} مع النشاط.\nتحقيق الهدف المحدد وتوثيق الشواهد المعتمدة.`;$("dt").value=a[3]||"";
-  $("meansBox").innerHTML=a[6].split("|").map(m=>`<label><input type="checkbox" checked data-m="${esc(m)}"> ${esc(m)}</label>`).join("");
+$("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(a[1]))} — ${esc(genderText(a[0]))}</option>`).join("");
+function pick(id){$("act").value=id;const a=P[id-1]; $("goals").value=genderText(a[7]).split("|").join("\n");$("mech").value=genderText(a[5]).split("|").join("\n");
+  $("res").value=genderText(`تنفيذ النشاط وفق الخطة التشغيلية.\nتفاعل ${a[4]} مع النشاط.\nتحقيق الهدف المحدد وتوثيق الشواهد المعتمدة.`);$("dt").value=a[3]||"";
+  $("meansBox").innerHTML=a[6].split("|").map(m=>{const x=genderText(m);return `<label><input type="checkbox" checked data-m="${esc(x)}"> ${esc(x)}</label>`}).join("");
   $("meansBox").querySelectorAll("input").forEach(c=>c.addEventListener("input",render));render()}
 $("act").addEventListener("input",()=>pick(+$("act").value));
 function render(){
@@ -189,31 +192,33 @@ function render(){
   const ev=n?`<div class="ev"><div class="box"><b>الشواهد المرفقة (${n})</b><div class="evg" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-template-rows:repeat(${rows},minmax(0,1fr))">${images.map((s,i)=>`<div${n==3&&i==2?' style="grid-column:1/-1"':""}><img src="${s}" alt="شاهد ${i+1}"></div>`).join("")}</div></div></div>`:`<div class="ev"></div>`;
   const r=plan.find(x=>x.id==id);
   $("sheet").innerHTML=`<div class="hd"><div class="t">المملكة العربية السعودية<br>وزارة التعليم<br>${hl().map(esc).join("<br>")}</div>${logo()}<div class="t">العام الدراسي ${v("year")}<br>${v("semester")}</div></div>
-  <div class="ttl">تقرير تنفيذ نشاط (${esc(a[1].length>46?a[1].slice(0,46)+"…":a[1])})</div>
+  <div class="ttl">تقرير (${esc(genderText(a[1]).length>46?genderText(a[1]).slice(0,46)+"…":genderText(a[1]))})</div>
   <div class="body">
-  <div class="row"><div class="box"><b>البرنامج</b>${esc(a[0])}</div><div class="box"><b>الفئة المستهدفة</b>${esc(a[4])}</div></div>
+  <div class="row"><div class="box"><b>البرنامج</b>${esc(genderText(a[0]))}</div><div class="box"><b>الفئة المستهدفة</b>${esc(genderText(a[4]))}</div></div>
   <div class="row"><div class="box"><b>تاريخ التنفيذ</b>${fd($("dt").value)||esc(a[2])}</div><div class="box"><b>عدد المستفيدين</b>${v("cnt")||"—"}</div>${r&&r.status=="مكتمل"&&r.closed?`<div class="box"><b>تاريخ الإقفال</b>${fd(r.closed)}</div>`:""}</div>
   <div class="box"><b>الأهداف</b>${ol($("goals").value)}</div>
   <div class="row"><div class="box"><b>آلية التنفيذ</b>${ol($("mech").value)}</div><div class="box"><b>النتائج المحققة</b>${ol($("res").value)}</div></div>
   <div class="box"><b>الشواهد والوسائل</b><div class="means">${means.map(m=>`<span>${esc(m)}</span>`).join("")}</div></div>
   ${ev}</div>
-  <div class="sig"><div>سفير/ة الثقافة المؤسسية<br>${v("amb")||"……………………"}</div><div>مدير/ة المدرسة<br>${v("prin")||"……………………"}</div></div>
+  <div class="sig"><div>${feminine()?"سفيرة":"سفير"} الثقافة المؤسسية<br>${v("amb")||"……………………"}</div><div>${feminine()?"مديرة":"مدير"} المدرسة<br>${v("prin")||"……………………"}</div></div>
   <div class="ft">${hl().map(esc).join(" — ")}</div>`;fit()}
 function fit(){const w=Math.min(794,document.documentElement.clientWidth-32),s=w/794;$("sheet").style.transform=`scale(${s})`;$("pw").style.width=w+"px";$("pw").style.height=(1123*s)+"px"}
 addEventListener("resize",fit);
 document.querySelectorAll("#hdr,#goals,#mech,#res,#dt,#cnt,#extra,#semester,#year,#prin,#amb").forEach(e=>e.addEventListener("input",render));
+$("schoolType").addEventListener("change",()=>{const id=+$("act").value;const a=P[id-1];$("act").innerHTML=P.map((x,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(x[1]))} — ${esc(genderText(x[0]))}</option>`).join("");$("act").value=String(id);table();if(a)pick(id)});
 $("files").addEventListener("change",async e=>{images=await Promise.all([...e.target.files].map(f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>shrink(fr.result).then(r);fr.readAsDataURL(f)})));render()});
 const shrink=src=>new Promise(r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.9))};im.onerror=()=>r(src);im.src=src});
 async function shot(){const el=$("sheet"),old=el.style.transform;el.style.transform="none";$("pw").style.height="auto";try{await document.fonts.ready;return await html2canvas(el,{scale:2,backgroundColor:"#fff",useCORS:true})}finally{el.style.transform=old;fit()}}
-const fname=()=>"تقرير-"+P[+$("act").value-1][1].slice(0,40);
+const fname=()=>"تقرير-"+genderText(P[+$("act").value-1][1]).slice(0,40);
 $("png").onclick=async()=>{msg("جارٍ إنشاء الصورة…");try{const c=await shot(),a=document.createElement("a");a.download=fname()+".png";a.href=c.toDataURL("image/png");a.click();msg("تم إنشاء الصورة.")}catch(e){msg("تعذّر إنشاء الصورة.")}};
 $("pdf").onclick=async()=>{msg("جارٍ إنشاء PDF…");try{const c=await shot(),{jsPDF}=window.jspdf,d=new jsPDF({unit:"mm",format:"a4"});d.addImage(c.toDataURL("image/jpeg",.95),"JPEG",0,0,210,297);d.save(fname()+".pdf");msg("تم إنشاء PDF.")}catch(e){msg("تعذّر إنشاء PDF.")}};
-$("link").onclick=async()=>{const p=new URLSearchParams({a:$("act").value,amb:$("amb").value,prin:$("prin").value,hdr:$("hdr").value,semester:$("semester").value,year:$("year").value}),u=location.origin+location.pathname+"?"+p;try{await navigator.clipboard.writeText(u);msg("تم نسخ الرابط.")}catch(e){prompt("انسخ الرابط:",u)}};
+$("link").onclick=async()=>{const p=new URLSearchParams({a:$("act").value,amb:$("amb").value,prin:$("prin").value,hdr:$("hdr").value,semester:$("semester").value,year:$("year").value,schoolType:$("schoolType").value}),u=location.origin+location.pathname+"?"+p;try{await navigator.clipboard.writeText(u);msg("تم نسخ الرابط.")}catch(e){prompt("انسخ الرابط:",u)}};
 // تهيئة
 const q=new URLSearchParams(location.search);
 let last="";try{last=localStorage.getItem("safeer-last")||""}catch(e){}
 if(last)$("amb").value=last;
-["amb","prin","hdr","semester","year"].forEach(k=>{if(q.get(k))$(k).value=q.get(k)});
+["amb","prin","hdr","semester","year","schoolType"].forEach(k=>{if(q.get(k))$(k).value=q.get(k)});
+$("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(a[1]))} — ${esc(genderText(a[0]))}</option>`).join("");
 plan=readPlan();const added=merge();table();pick(+q.get("a")||1);
 if(added&&added<P.length)msg(`أُكملت ${added} أنشطة ناقصة تلقائيًا دون تكرار.`);
 </script>
