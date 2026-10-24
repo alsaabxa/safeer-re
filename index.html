@@ -152,6 +152,7 @@ let plan=[],images=[];
 const KEY=()=>"safeer-plan:"+($("amb").value.trim()||"حسابي");
 const hl=()=>$("hdr").value.split("\n").map(x=>x.trim()).filter(Boolean);
 const feminine=()=>$("schoolType").value!=="boys";
+const syncGenderLabels=()=>{document.querySelector('label[for="amb"]').textContent=feminine()?"اسم السفيرة (اختياري — يُحفظ تقدّمك باسمها على هذا الجهاز)":"اسم السفير (اختياري — يُحفظ تقدّمك باسمه على هذا الجهاز)";document.querySelector('label[for="prin"]').textContent=feminine()?"اسم مديرة المدرسة (اختياري)":"اسم مدير المدرسة (اختياري)"};
 const genderText=s=>{let t=String(s??"");if(feminine())return t.split("الموجَّه/ة").join("الموجَّهة");const pairs=[["الموجَّه/ة","الموجَّه"],["تقدمه","يقدمه"],["للمديرة","للمدير"],["المديرة","المدير"],["مديرة","مدير"],["السفيرة","السفير"],["سفيرة","سفير"],["السفيرات","السفراء"],["سفيرات","سفراء"],["المنسوبات","المنسوبين"],["منسوبات","منسوبين"],["الموظفات","الموظفين"],["موظفات","موظفين"],["المعلمات","المعلمين"],["معلمات","معلمين"],["الطالبات","الطلاب"],["طالبات","طلاب"],["المشاركات","المشاركين"],["مشاركات","مشاركين"],["المرشدات","المرشدين"],["مرشدات","مرشدين"],["المشرفات","المشرفين"],["مشرفات","مشرفين"]];for(const [a,b] of pairs)t=t.split(a).join(b);return t};
 const msg=t=>{$("msg").textContent=t};
 function readPlan(){let s=[];try{s=JSON.parse(localStorage.getItem(KEY())||"[]")}catch(e){}const seen=new Set();return s.filter(r=>r&&r.id>=1&&r.id<=P.length&&ST.includes(r.status)&&!seen.has(r.id)&&seen.add(r.id)).map(r=>({id:r.id,status:r.status,closed:r.closed||""}))}
@@ -205,7 +206,7 @@ function render(){
 function fit(){const w=Math.min(794,document.documentElement.clientWidth-32),s=w/794;$("sheet").style.transform=`scale(${s})`;$("pw").style.width=w+"px";$("pw").style.height=(1123*s)+"px"}
 addEventListener("resize",fit);
 document.querySelectorAll("#hdr,#goals,#mech,#res,#dt,#cnt,#extra,#semester,#year,#prin,#amb").forEach(e=>e.addEventListener("input",render));
-$("schoolType").addEventListener("change",()=>{const id=+$("act").value;const a=P[id-1];$("act").innerHTML=P.map((x,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(x[1]))} — ${esc(genderText(x[0]))}</option>`).join("");$("act").value=String(id);table();if(a)pick(id)});
+$("schoolType").addEventListener("change",()=>{syncGenderLabels();const id=+$("act").value;const a=P[id-1];$("act").innerHTML=P.map((x,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(x[1]))} — ${esc(genderText(x[0]))}</option>`).join("");$("act").value=String(id);table();if(a)pick(id)});
 $("files").addEventListener("change",async e=>{images=await Promise.all([...e.target.files].map(f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>shrink(fr.result).then(r);fr.readAsDataURL(f)})));render()});
 const shrink=src=>new Promise(r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.9))};im.onerror=()=>r(src);im.src=src});
 async function shot(){const el=$("sheet"),old=el.style.transform;el.style.transform="none";$("pw").style.height="auto";try{await document.fonts.ready;return await html2canvas(el,{scale:2,backgroundColor:"#fff",useCORS:true})}finally{el.style.transform=old;fit()}}
@@ -218,7 +219,7 @@ const q=new URLSearchParams(location.search);
 let last="";try{last=localStorage.getItem("safeer-last")||""}catch(e){}
 if(last)$("amb").value=last;
 ["amb","prin","hdr","semester","year","schoolType"].forEach(k=>{if(q.get(k))$(k).value=q.get(k)});
-$("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(a[1]))} — ${esc(genderText(a[0]))}</option>`).join("");
+$("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(a[1]))} — ${esc(genderText(a[0]))}</option>`).join("");syncGenderLabels();
 plan=readPlan();const added=merge();table();pick(+q.get("a")||1);
 if(added&&added<P.length)msg(`أُكملت ${added} أنشطة ناقصة تلقائيًا دون تكرار.`);
 </script>
