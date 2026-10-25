@@ -93,8 +93,10 @@ td button{padding:5px 10px;font-size:13px}
   <div><label for="schoolType">نوع المدرسة</label><select id="schoolType"><option value="girls">بنات</option><option value="boys">بنين</option></select></div>
   <div><label for="semester">الفصل الدراسي</label><select id="semester"><option>الفصل الدراسي الأول</option><option>الفصل الدراسي الثاني</option><option>الفصل الدراسي الثالث</option></select></div>
   <div><label for="year">العام الدراسي</label><input id="year" value="١٤٤٨هـ"></div>
-  <div style="grid-column:1/-1"><label for="hdr">ترويسة التقرير (تظهر أعلى التقرير وأسفله، كل سطر على حدة، قابلة للتعديل)</label><textarea id="hdr" style="min-height:60px">الإدارة العامة للتعليم بمنطقة نجران
-الابتدائية الخامسة والعشرون</textarea></div>
+  <div><label for="adminLine">الإدارة العامة للتعليم / المنطقة</label><input id="adminLine" value="الإدارة العامة للتعليم بمنطقة نجران"></div>
+  <div><label for="schoolLine">اسم المدرسة</label><input id="schoolLine" value="الابتدائية الخامسة والعشرون"></div>
+  <textarea id="hdr" style="display:none">الإدارة العامة للتعليم بمنطقة نجران
+الابتدائية الخامسة والعشرون</textarea>
  </div>
  <div class="btns" style="margin-top:10px">
   <button id="load">تحميل الخطة إلى حسابي</button>
@@ -169,7 +171,8 @@ const P=[
 ];
 let plan=[],images=[];
 const KEY=()=>"safeer-plan:"+($("amb").value.trim()||"حسابي");
-const hl=()=>$("hdr").value.split("\n").map(x=>x.trim()).filter(Boolean);
+const hl=()=>[$("adminLine").value.trim(),$("schoolLine").value.trim()].filter(Boolean);
+const syncHeader=()=>{$("hdr").value=[$("adminLine").value.trim(),$("schoolLine").value.trim()].filter(Boolean).join("\n")};
 const feminine=()=>$("schoolType").value!=="boys";
 const syncGenderLabels=()=>{document.querySelector('label[for="amb"]').textContent=feminine()?"اسم السفيرة (اختياري — يُحفظ تقدّمك باسمها على هذا الجهاز)":"اسم السفير (اختياري — يُحفظ تقدّمك باسمه على هذا الجهاز)";document.querySelector('label[for="prin"]').textContent=feminine()?"اسم مديرة المدرسة (اختياري)":"اسم مدير المدرسة (اختياري)"};
 const genderText=s=>{let t=String(s??"");if(feminine())return t.split("الموجَّه/ة").join("الموجَّهة");const pairs=[["الموجَّه/ة","الموجَّه"],["تقدمه","يقدمه"],["للمديرة","للمدير"],["المديرة","المدير"],["مديرة","مدير"],["السفيرة","السفير"],["سفيرة","سفير"],["السفيرات","السفراء"],["سفيرات","سفراء"],["المنسوبات","المنسوبين"],["منسوبات","منسوبين"],["الموظفات","الموظفين"],["موظفات","موظفين"],["المعلمات","المعلمين"],["معلمات","معلمين"],["الطالبات","الطلاب"],["طالبات","طلاب"],["المشاركات","المشاركين"],["مشاركات","مشاركين"],["المرشدات","المرشدين"],["مرشدات","مرشدين"],["المشرفات","المشرفين"],["مشرفات","مشرفين"]];for(const [a,b] of pairs)t=t.split(a).join(b);return t};
@@ -244,7 +247,8 @@ function render(){
 function fit(){const w=Math.min(794,document.documentElement.clientWidth-32),s=w/794;$("sheet").style.transform=`scale(${s})`;$("pw").style.width=w+"px";$("pw").style.height=(( $("template")?.value==="official"?1146:1123)*s)+"px"}
 $("template").addEventListener("change",render);
 addEventListener("resize",fit);
-document.querySelectorAll("#hdr,#goals,#mech,#res,#dt,#cnt,#targetGroup,#extra,#semester,#year,#prin,#amb").forEach(e=>e.addEventListener("input",render));
+document.querySelectorAll("#goals,#mech,#res,#dt,#cnt,#targetGroup,#extra,#semester,#year,#prin,#amb").forEach(e=>e.addEventListener("input",render));
+["adminLine","schoolLine"].forEach(id=>$(id).addEventListener("input",()=>{syncHeader();render()}));
 $("schoolType").addEventListener("change",()=>{syncGenderLabels();const id=+$("act").value;const a=P[id-1];$("act").innerHTML=P.map((x,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(x[1]))} — ${esc(genderText(x[0]))}</option>`).join("");$("act").value=String(id);table();if(a)pick(id)});
 $("files").addEventListener("change",async e=>{images=await Promise.all([...e.target.files].map(f=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>shrink(fr.result).then(r);fr.readAsDataURL(f)})));render()});
 const shrink=src=>new Promise(r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.9))};im.onerror=()=>r(src);im.src=src});
@@ -263,6 +267,7 @@ let last="";try{last=localStorage.getItem("safeer-last")||""}catch(e){}
 if(last)$("amb").value=last;
 if(q.get("template"))$("template").value=q.get("template");
 ["amb","prin","hdr","semester","year","schoolType"].forEach(k=>{if(q.get(k))$(k).value=q.get(k)});
+const savedHeader=$("hdr").value.split("\n");$("adminLine").value=savedHeader[0]||"";$("schoolLine").value=savedHeader[1]||"";
 $("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText(a[1]))} — ${esc(genderText(a[0]))}</option>`).join("");syncGenderLabels();
 plan=readPlan();const added=merge();table();pick(+q.get("a")||1);
 if(q.get("targetGroup"))$("targetGroup").value=q.get("targetGroup");render();
