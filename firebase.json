@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "safeer-re",
+    "site": "safeer-portofolio",
     "public": ".",
     "ignore": [
       "firebase.json",
