@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "site": "safeer-re",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "public/**"
+    ]
+  }
+}
