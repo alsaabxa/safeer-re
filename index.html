@@ -27,7 +27,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 small{color:#6b8593;display:block;margin-top:4px}
 #msg{min-height:20px;font-size:14px;color:var(--green)}
 .preview-wrap{overflow:hidden;margin:0 auto}
-#sheet{width:794px;height:1123px;background:#fff;color:#1c2b33;position:relative;display:flex;flex-direction:column;transform-origin:top right;overflow:hidden}
+#sheet{width:794px;height:1123px;background:#fff;color:#1c2b33;position:relative;display:flex;flex-direction:column;transform-origin:top right;overflow:hidden;font-weight:700}
 .hd{background:var(--navy);height:150px;border-radius:0 0 40px 40px;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 50px;position:relative;border-top:6px solid #2b8dc1;flex:none}
 .hd::before{content:"";position:absolute;top:-6px;left:0;right:0;height:6px;background:linear-gradient(90deg,#2b86c5,#3fb98a)}
 .hd .t{font-size:15px;line-height:1.5;text-align:center;min-width:150px}.hd .t:first-child{max-width:270px}
@@ -35,7 +35,7 @@ small{color:#6b8593;display:block;margin-top:4px}
 .body{padding:62px 34px 0;flex:1;display:flex;flex-direction:column;gap:14px;min-height:0}
 .row{display:flex;gap:14px}.row>*{flex:1}
 .box{border:1.5px solid var(--blue);border-bottom-color:#3fb98a;border-radius:10px;position:relative;padding:14px 16px 8px;min-height:40px;font-size:15px;text-align:center;margin-top:10px}
-.box>b{position:absolute;top:-13px;right:14px;background:#fff;padding:0 10px;color:var(--green);font-weight:500;font-size:16px}
+.box>b{position:absolute;top:-13px;right:14px;background:#fff;padding:0 10px;color:var(--green);font-weight:700;font-size:16px}
 .box ol{margin:0;padding-inline-start:26px;text-align:right;list-style:arabic-indic;line-height:1.75}
 .means{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:center;font-size:14.5px}
 .means span::before{content:"✓ ";color:var(--green);font-weight:700}
@@ -183,7 +183,7 @@ function merge(){const have=new Set(plan.map(r=>r.id));let add=0;P.forEach((a,i)
 const fd=d=>d?new Date(d+"T00:00").toLocaleDateString("ar-SA-u-ca-gregory-nu-arab",{day:"numeric",month:"long",year:"numeric"}):"";
 function table(){
   $("tb").innerHTML=plan.map(r=>{const a=P[r.id-1],si=ST.indexOf(r.status);
-  return `<tr><td>${r.id}</td><td class="${r.status=="مكتمل"?"program-complete":""}">${esc(genderText(a[0]))}</td><td>${esc(genderText(a[1]))}</td><td>${a[2]}</td><td><select class="st s${si}" data-s="${r.id}">${ST.map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select></td><td>${r.status=="مكتمل"?`<input type="date" data-c="${r.id}" value="${r.closed}">`:"—"}</td><td><button class="ghost" data-r="${r.id}">تقرير</button></td></tr>`}).join("");
+  return `<tr><td>${r.id}</td><td>${r.status=="مكتمل"?`<span class="program-complete">${esc(genderText(a[0]))}</span>`:esc(genderText(a[0]))}</td><td>${esc(genderText(a[1]))}</td><td>${a[2]}</td><td><select class="st s${si}" data-s="${r.id}">${ST.map(x=>`<option${x==r.status?" selected":""}>${x}</option>`).join("")}</select></td><td>${r.status=="مكتمل"?`<input type="date" data-c="${r.id}" value="${r.closed}">`:"—"}</td><td><button class="ghost" data-r="${r.id}">تقرير</button></td></tr>`}).join("");
   const n=plan.filter(r=>r.status=="مكتمل").length;
   $("sum").innerHTML=`<span>الأنشطة المحمّلة: ${plan.length}/${P.length}</span><span>مكتمل: ${n}</span>`+ST.filter(s=>s!="مكتمل").map(s=>({s,c:plan.filter(r=>r.status==s).length})).filter(x=>x.c).map(x=>`<span>${x.s}: ${x.c}</span>`).join("");
   $("bar").style.width=Math.round(n/P.length*100)+"%";
@@ -197,7 +197,7 @@ $("amb").addEventListener("change",()=>{plan=readPlan();merge();table();render()
 $("exp").onclick=()=>{const nm=$("amb").value.trim()||"حسابي",done=plan.filter(r=>r.status=="مكتمل").length,
 rows=plan.map(r=>`<tr><td>${r.id}</td><td>${r.status==="مكتمل"?'<span class="program-complete">'+esc(P[r.id-1][0])+'</span>':esc(P[r.id-1][0])}</td><td>${esc(P[r.id-1][1])}</td><td>${esc(P[r.id-1][2])}</td><td>${r.status==="مكتمل"?'<span class="status-complete">مكتمل</span>':esc(r.status)}</td><td>${r.closed?fd(r.closed):"—"}</td></tr>`).join(""),
 data=JSON.stringify({amb:nm,plan}).replace(/</g,"\\u003c"),
-h=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>خطة ${esc(nm)}</title><style>body{font-family:Tahoma,sans-serif;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #c9d8e0;padding:6px;text-align:right}th{background:#16445a;color:#fff}.status-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}.program-complete{color:#15803d;font-weight:700}</style></head><body><h2>تقارير الثقافة المؤسسية — ${esc(nm)}</h2><p>المكتمل: ${done} من ${P.length}</p><table><tr><th>م</th><th>البرنامج</th><th>النشاط</th><th>التوقيت</th><th>الحالة</th><th>تاريخ الإقفال</th></tr>${rows}</table><script type="application/json" id="safeer-data">${data}<\/script></body></html>`;
+h=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>خطة ${esc(nm)}</title><style>body{font-family:Tahoma,sans-serif;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #c9d8e0;padding:6px;text-align:right}td{font-weight:700}th{background:#16445a;color:#fff}.status-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}.program-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}</style></head><body><h2>تقارير الثقافة المؤسسية — ${esc(nm)}</h2><p>المكتمل: ${done} من ${P.length}</p><table><tr><th>م</th><th>البرنامج</th><th>النشاط</th><th>التوقيت</th><th>الحالة</th><th>تاريخ الإقفال</th></tr>${rows}</table><script type="application/json" id="safeer-data">${data}<\/script></body></html>`;
 const a=document.createElement("a");a.download="خطة-"+nm+".html";a.href=URL.createObjectURL(new Blob([h],{type:"text/html"}));a.click()};
 $("imp").onclick=()=>$("impf").click();
 $("impf").onchange=async e=>{try{const t=await e.target.files[0].text(),m=t.match(/<script type="application\/json" id="safeer-data">([\s\S]*?)<\/script>/),j=JSON.parse(m?m[1]:t),arr=Array.isArray(j)?j:j.plan;let n=0;arr.forEach(x=>{if(x&&x.id>=1&&x.id<=P.length&&ST.includes(x.status)){const r=plan.find(p=>p.id==x.id);if(r){r.status=x.status;r.closed=x.status=="مكتمل"?(x.closed||""):""}else plan.push({id:x.id,status:x.status,closed:x.status=="مكتمل"?(x.closed||""):""});n++}});merge();table();msg(`تم استيراد ${n} نشاط.`)}catch(err){msg("ملف غير صالح.")}e.target.value=""};
