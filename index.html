@@ -203,17 +203,7 @@ $("amb").addEventListener("change",()=>{plan=readPlan();merge();table();render()
 $("exp").onclick=()=>{const nm=$("amb").value.trim()||"حسابي",done=plan.filter(r=>r.status=="مكتمل").length,
 rows=plan.map(r=>`<tr><td>${r.id}</td><td>${r.status==="مكتمل"?'<span class="program-complete">'+esc(P[r.id-1][0])+'</span>':esc(P[r.id-1][0])}</td><td>${esc(P[r.id-1][1])}</td><td>${esc(P[r.id-1][2])}</td><td>${r.status==="مكتمل"?'<span class="status-complete">مكتمل</span>':esc(r.status)}</td><td>${r.closed?fd(r.closed):"—"}</td></tr>`).join(""),
 data=JSON.stringify({amb:nm,plan}).replace(/</g,"\\u003c"),
-h=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>خطة ${esc(nm)}</title><style>body{font-family:Tahoma,sans-serif;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #c9d8e0;padding:6px;text-align:right}td{font-weight:700}th{background:#16445a;color:#fff}.status-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}.program-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}</style></head><body><h2>تقارير الثقافة المؤسسية — ${esc(nm)}</h2><p>المكتمل: ${done} من ${P.length}</p><table><tr><th>م</th><th>البرنامج</th><th>النشاط</th><th>التوقيت</th><th>الحالة</th><th>تاريخ الإقفال</th></tr>${rows}</table><script type="application/json" id="safeer-data">${data}<\/script><script>
-(()=>{
- const button=document.getElementById('installApp'),hint=document.getElementById('installHint');
- if('serviceWorker' in navigator) addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
- const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
- if(standalone){if(button)button.hidden=true;return}
- let promptEvent=null;
- addEventListener('beforeinstallprompt',event=>{event.preventDefault();promptEvent=event;if(button){button.hidden=false;button.textContent='تثبيت التطبيق'}});
- if(button){button.hidden=false;button.addEventListener('click',async()=>{if(promptEvent){promptEvent.prompt();await promptEvent.userChoice;promptEvent=null;button.hidden=true;return}if(hint){hint.style.display='block';hint.textContent=/iphone|ipad|ipod/i.test(navigator.userAgent)?'على iPhone أو iPad: اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية».':'من قائمة المتصفح اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».'}})}
-})();
-</script>
+h=`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>خطة ${esc(nm)}</title><style>body{font-family:Tahoma,sans-serif;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #c9d8e0;padding:6px;text-align:right}td{font-weight:700}th{background:#16445a;color:#fff}.status-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}.program-complete{color:#15803d;background:#dcfce7;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block}</style></head><body><h2>تقارير الثقافة المؤسسية — ${esc(nm)}</h2><p>المكتمل: ${done} من ${P.length}</p><table><tr><th>م</th><th>البرنامج</th><th>النشاط</th><th>التوقيت</th><th>الحالة</th><th>تاريخ الإقفال</th></tr>${rows}</table><script type="application/json" id="safeer-data">${data}<\/script>
 </body></html>`;
 const a=document.createElement("a");a.download="خطة-"+nm+".html";a.href=URL.createObjectURL(new Blob([h],{type:"text/html"}));a.click()};
 $("imp").onclick=()=>$("impf").click();
@@ -289,6 +279,17 @@ $("act").innerHTML=P.map((a,i)=>`<option value="${i+1}">${i+1}. ${esc(genderText
 plan=readPlan();const added=merge();table();pick(+q.get("a")||1);
 if(q.get("targetGroup"))$("targetGroup").value=q.get("targetGroup");render();
 if(added&&added<P.length)msg(`أُكملت ${added} أنشطة ناقصة تلقائيًا دون تكرار.`);
+</script>
+<script>
+(()=>{
+ const button=document.getElementById('installApp'),hint=document.getElementById('installHint');
+ if('serviceWorker' in navigator) addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+ const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+ if(standalone){if(button)button.hidden=true;return}
+ let promptEvent=null;
+ addEventListener('beforeinstallprompt',event=>{event.preventDefault();promptEvent=event;if(button){button.hidden=false;button.textContent='تثبيت التطبيق'}});
+ if(button){button.hidden=false;button.addEventListener('click',async()=>{if(promptEvent){promptEvent.prompt();await promptEvent.userChoice;promptEvent=null;button.hidden=true;return}if(hint){hint.style.display='block';hint.textContent=/iphone|ipad|ipod/i.test(navigator.userAgent)?'على iPhone أو iPad: اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية».':'من قائمة المتصفح اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».'}})}
+})();
 </script>
 </body>
 </html>
