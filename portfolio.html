@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0B7D7C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="سفير الثقافة">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <title>ملف إنجاز الثقافة المؤسسية</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Aref+Ruqaa:wght@700&display=swap">
 <style>
@@ -103,6 +109,7 @@ dialog::backdrop{background:#0007}
 <div class="panel">
  <h1 id="main-title">ملف إنجاز الثقافة المؤسسية</h1>
  <div class="by">إعداد الأستاذ: عبدالرحمن الصعب</div><a class="telegram-contact" href="https://t.me/ALSAABXA" target="_blank" rel="noopener noreferrer" aria-label="Telegram @ALSAABXA" title="Telegram @ALSAABXA"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 4.3 18.5 19c-.2 1.1-.8 1.4-1.7.9l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.7-7.9c.4-.3-.1-.5-.6-.2L6.5 12.9l-4.6-1.4c-1-.3-1-.9.2-1.4L20.2 3.2c.8-.3 1.7.2 1.5 1.1Z"/></svg><span>@ALSAABXA</span></a>
+<div style="text-align:center;margin:-8px 0 14px"><button id="installApp" type="button" style="background:#0B7D7C;color:#fff;border:0;border-radius:999px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer" aria-label="تثبيت تطبيق سفير الثقافة">تثبيت التطبيق</button><small id="installHint" style="display:none;margin-top:6px;color:#59727e">أضف الموقع إلى الشاشة الرئيسية لاستخدامه كتطبيق.</small></div>
  <small style="margin:0 0 10px">أنشئ تقاريرك من تبويب التقارير واضغط «إضافة التقرير إلى ملف الإنجاز» لتصل صفحة التقرير وبياناته إلى السجل تلقائيًا، أو أرفق الصور يدويًا. يُحفظ ما تدخله على هذا الجهاز تلقائيًا.</small>
  <div class="card"><label>المعلومات الشخصية (كلها اختيارية)</label>
   <div class="grid" id="pf"></div>
@@ -229,6 +236,17 @@ addEventListener("message",e=>{const d=e.data;if(!d||d.type!=="safeer-add"||!S.s
 $("pr").onclick=async()=>{pages();await ready();print()};
 $("rs").onclick=()=>{if(confirm("سيُمسح كل ما أدخلته في هذا الملف. متابعة؟")){S=DEF();fill();secPanel();pages();saveDB()}};
 (async()=>{const d=await loadDB();if(d){const b=DEF();S={f:{...b.f,...d.f},sec:{...b.sec,...d.sec}}}fill();secPanel();pages();portfolioReady=true;for(const x of pendingTransfers)receiveReport(x.data,x.source,x.origin);pendingTransfers.length=0})();
+</script>
+<script>
+(()=>{
+ const button=document.getElementById('installApp'),hint=document.getElementById('installHint');
+ if('serviceWorker' in navigator) addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));
+ const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+ if(standalone){if(button)button.hidden=true;return}
+ let promptEvent=null;
+ addEventListener('beforeinstallprompt',event=>{event.preventDefault();promptEvent=event;if(button){button.hidden=false;button.textContent='تثبيت التطبيق'}});
+ if(button){button.hidden=false;button.addEventListener('click',async()=>{if(promptEvent){promptEvent.prompt();await promptEvent.userChoice;promptEvent=null;button.hidden=true;return}if(hint){hint.style.display='block';hint.textContent=/iphone|ipad|ipod/i.test(navigator.userAgent)?'على iPhone أو iPad: اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية».':'من قائمة المتصفح اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».'}})}
+})();
 </script>
 </body>
 </html>
